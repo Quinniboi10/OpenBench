@@ -1,6 +1,6 @@
 {
     "client_version"  : 33,
-    "client_repo_url" : "https://github.com/AndyGrant/OpenBench",
+    "client_repo_url" : "https://github.com/Quinniboi10/OpenBench",
     "client_repo_ref" : "master",
 
     "use_cross_approval"          : false,
@@ -36,6 +36,7 @@
         "Igel",
         "Koivisto",
         "Laser",
+        "Prelude",
         "RubiChess",
         "Seer",
         "Stash",
