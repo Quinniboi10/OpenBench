@@ -82,6 +82,14 @@
         }
     },
     "datagen_presets": {
-        "default": {}
+        "default": {
+            "base_branch": "main",
+            "dev_branch": "main",
+            "win_adj": "None",
+            "draw_adj": "None",
+            "workload_size": 256,
+            "both_options": "Threads=1 Hash=64 Minimal=true",
+            "both_time_control": "N=5000"
+        }
     }
 }

@@ -38,6 +38,7 @@ from django.db import transaction
 import OpenBench.spsa_utils
 import OpenBench.utils
 import OpenBench.views
+import OpenBench.datagen_stats
 
 from OpenBench.config import OPENBENCH_CONFIG
 from OpenBench.models import *
@@ -278,6 +279,7 @@ def create_new_datagen(request):
         test.base_netname = Network.objects.get(engine=test.base_engine, sha256=test.base_network).name
 
     test.save()
+    OpenBench.datagen_stats.safe_record_sample(test.id, force=True)
 
     profile = Profile.objects.get(user=request.user)
     profile.tests += 1

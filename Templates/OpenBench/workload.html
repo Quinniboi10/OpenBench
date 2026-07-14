@@ -6,12 +6,20 @@
 {% load static %}
 
 {% block scripts %}
-
     <script src="{% static 'workload_utils.js' %}?{{ static_version }}"></script>
+    <script src="{% static 'copy_text.js' %}?{{ static_version }}"></script>
+    <script src="{% static 'workload_results.js' %}?{{ static_version }}"></script>
+    {% if type == "DATAGEN" %}
+        <script src="{% static 'history_graph.js' %}?{{ static_version }}"></script>
+        <script src="{% static 'datagen_progress.js' %}?{{ static_version }}"></script>
+    {% endif %}
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             populate_results({{results|safe}});
+            {% if type == "DATAGEN" %}
+                initialize_datagen_progress({{workload.id}});
+            {% endif %}
         });
     </script>
 
@@ -199,6 +207,51 @@
                 </div>
             </div>
         </form>
+
+        {% if type == "DATAGEN" %}
+            <div id="datagen-progress" class="datagen-history-panel" title="Generation rate over the last two hours">
+                <div class="datagen-history-heading">
+                    <div class="datagen-history-label">Generation Rate</div>
+                    <div class="datagen-history-rate" aria-live="polite">
+                        <strong id="datagen-rate">&mdash;</strong> games/s
+                        <span id="datagen-stale">Stale</span>
+                    </div>
+                </div>
+                <div id="datagen-rate-graph" class="history-graph-widget">
+                    <div class="history-graph-chart">
+                        <div class="history-graph-yaxis" aria-hidden="true">
+                            <div class="history-graph-ymax">1.0</div>
+                            <div class="history-graph-ymid">0.5</div>
+                            <div>0.0</div>
+                        </div>
+                        <div class="history-graph-main">
+                            <div class="history-graph-plot">
+                                <svg class="history-graph-svg" viewBox="0 0 320 112" role="img" aria-label="Exponential moving average of games completed per second">
+                                    <rect class="history-graph-bg" x="0" y="0" width="320" height="112" rx="6"></rect>
+                                    <line class="history-graph-grid-line" x1="0" y1="6" x2="320" y2="6"></line>
+                                    <line class="history-graph-grid-line" x1="0" y1="56" x2="320" y2="56"></line>
+                                    <line class="history-graph-grid-line" x1="0" y1="106" x2="320" y2="106"></line>
+                                    <path class="history-graph-path"></path>
+                                    <text class="history-graph-empty" x="160" y="59" text-anchor="middle">Loading history graph...</text>
+                                    <line class="history-graph-hover-line" x1="0" y1="6" x2="0" y2="106"></line>
+                                    <circle class="history-graph-hover-point" cx="0" cy="0" r="3"></circle>
+                                    <rect class="history-graph-hitbox" x="0" y="0" width="320" height="112" rx="6"></rect>
+                                </svg>
+                                <div class="history-graph-tooltip"></div>
+                            </div>
+                            <div class="history-graph-xaxis" aria-hidden="true">
+                                <div class="history-graph-xmin">Start</div>
+                                <div class="history-graph-xmax">Now</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="datagen-history-footer" aria-live="polite">
+                        <span>ETA <strong id="datagen-eta">Calculating</strong></span>
+                        <span id="datagen-completed">0 / 0 games</span>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
     </div>
 
     <!-- SPSA Paramater Summary, for Tunes -->

@@ -45,6 +45,7 @@ from OpenBench.stats import TrinomialSPRT, PentanomialSPRT
 
 import OpenBench.views
 import OpenBench.model_utils
+import OpenBench.datagen_stats
 
 
 class TimeControl(object):
@@ -451,6 +452,13 @@ def update_test(request, machine):
             test.passed = test.finished = test.games >= test.max_games
 
         test.save()
+
+        if test.test_mode == 'DATAGEN':
+            test_id = test.id
+            force_sample = test.finished
+            transaction.on_commit(
+                lambda: OpenBench.datagen_stats.safe_record_sample(test_id, force=force_sample)
+            )
 
         # Update Result object; No risk from concurrent access
         Result.objects.filter(id=result_id).update(

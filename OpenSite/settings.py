@@ -24,6 +24,10 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://*.trycloudflare.com",
+]
+
 HTML_MINIFY   = True
 APPEND_SLASH  = True
 

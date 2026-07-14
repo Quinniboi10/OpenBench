@@ -20,8 +20,9 @@
 
 from django.db.models import CharField, IntegerField, BigIntegerField, BooleanField, FloatField
 from django.db.models import JSONField, ForeignKey, DateTimeField, OneToOneField
-from django.db.models import CASCADE, PROTECT, Model, TextChoices
+from django.db.models import CASCADE, PROTECT, Index, Model, TextChoices
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 class Engine(Model):
 
@@ -86,6 +87,15 @@ class Result(Model):
 
     def __str__(self):
         return '{0} {1}'.format(self.test.dev.name, self.machine.__str__())
+
+class DatagenSample(Model):
+
+    test    = ForeignKey('Test', CASCADE, related_name='datagen_samples')
+    games   = BigIntegerField()
+    created = DateTimeField(default=timezone.now)
+
+    class Meta:
+        indexes = [Index(fields=['test', 'created'], name='datagen_test_created_idx')]
 
 class Test(Model):
 

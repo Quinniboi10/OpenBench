@@ -29,6 +29,7 @@ import re
 import sys
 
 import OpenBench.utils
+import OpenBench.datagen_stats
 
 from OpenBench.config import OPENBENCH_CONFIG
 from OpenBench.models import Result, Test
@@ -49,6 +50,9 @@ def get_workload(request, machine):
     machine.workload = test.id;
     machine.mnps = machine.dev_mnps = machine.base_mnps = 0.00
     machine.save(); result.save()
+
+    if test.test_mode == 'DATAGEN':
+        OpenBench.datagen_stats.safe_record_sample(test.id)
 
     return { 'workload' : workload_to_dictionary(test, result, machine) }
 

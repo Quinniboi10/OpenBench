@@ -25,6 +25,7 @@ import django.shortcuts
 import django.contrib.auth
 
 import OpenBench.config
+import OpenBench.datagen_stats
 import OpenBench.model_utils
 import OpenBench.spsa_utils
 import OpenBench.utils
@@ -1017,6 +1018,23 @@ def api_workload_results(request, workload_id):
 
     truncated, results_json = fetch_results(workload_id, force=True)
     return JsonResponse({'results' : results_json})
+
+@csrf_exempt
+def api_datagen_progress(request, workload_id):
+
+    if not api_authenticate(request):
+        return api_response({ 'error' : 'API requires authentication for this server' })
+
+    workload = Test.objects.only(
+        'id', 'games', 'max_games', 'finished'
+    ).filter(pk=workload_id, test_mode='DATAGEN').first()
+
+    if not workload:
+        return api_response({ 'error' : 'Requested Datagen Workload Id does not exist' })
+
+    response = JsonResponse(OpenBench.datagen_stats.progress_payload(workload))
+    response['Cache-Control'] = 'no-store'
+    return response
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #                                BUSINESS VIEWS                               #
